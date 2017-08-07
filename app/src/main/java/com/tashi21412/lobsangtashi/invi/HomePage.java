@@ -15,7 +15,9 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -38,68 +40,69 @@ public class HomePage extends AppCompatActivity {
         userList.add("charlie33");
         userList.add("lhasa59");
         userList.add("x42hun");
+        userList.add("Zero23");
+        userList.add("Hanna_time");
 
         addressList.add("TimeSquare");
         addressList.add("Brooklyn Bridge");
         addressList.add("Northern Boulveard");
         addressList.add("Manhatan");
+        addressList.add("43-12 Night St");
+        addressList.add("Queens");
 
-        CustomArrayAdapter arrayAdapter = new CustomArrayAdapter(this, userList, addressList);
+
+
+
+        CustomAdapter arrayAdapter = new CustomAdapter(this, userList, addressList);
+        //ArrayAdapter arrayAdapter =new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, userList);
         listView.setAdapter(arrayAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
-                Intent intent = new Intent(HomePage.this, DetailView.class);
-                String userName = ((TextView)view.findViewById(R.id.loginUser)).getText().toString();
-                intent.putExtra("name",userName);
-                startActivity(intent);
+            public void onItemClick(AdapterView<?> parent, View view, int i, long id) {
+                startActivity(new Intent(HomePage.this, DetailView.class));
+
+
             }
         });
 
-
     }
 
-    public class CustomArrayAdapter extends BaseAdapter{
-        public final Context context;
-        public final ArrayList <String> userName;
-        public final ArrayList <String> eventAddress;
 
+    public class CustomAdapter extends ArrayAdapter {
+        Context context;
+        ArrayList <String> userList;
+        ArrayList <String>addressList;
+        LayoutInflater inflter;
 
-        public CustomArrayAdapter(Context context, ArrayList<String> userName, ArrayList<String> eventAddress) {
-            this.context = context;
-            this.userName = userName;
-            this.eventAddress = eventAddress;
+        public CustomAdapter(Context applicationContext, ArrayList userList, ArrayList addressList) {
+            super(applicationContext, R.layout.home_page, userList);
+            this.context = applicationContext;
+            this.userList = userList;
+            this.addressList = addressList;
 
         }
+
+
 
         @Override
-        public int getCount() {
-            return userName.size();
+        public View getView(int i, View view, ViewGroup viewGroup) {
+
+            if (view ==null){
+                inflter = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflter.inflate(R.layout.home_page,null);
+
+            }
+
+            TextView myLoginUser = (TextView) view.findViewById(R.id.loginUser);
+            TextView myAddress = (TextView) view.findViewById(R.id.loginAddress);
+
+            myLoginUser.setText(this.userList.get(i));
+            myAddress.setText(this.addressList.get(i));
+
+            return view;
         }
 
-        @Override
-        public Object getItem(int i) {
-            return null;
-        }
 
-        @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = inflater.inflate(R.layout.home_page,null);
-
-            TextView user  = (TextView) findViewById(R.id.loginUser);
-            TextView address  = (TextView) findViewById(R.id.loginAddress);
-
-            user.setText("myName");
-            address.setText("YourName");
-
-            return rowView;
-        }
     }
 }
